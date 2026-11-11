@@ -1,0 +1,13 @@
+---
+interface Props { name: string; type: string; color: string; popupId?: string; href?: string }
+const { name, type, color, popupId, href } = Astro.props;
+const Tag = href ? 'a' : 'button';
+const attrs = href ? { href } : { type: 'button', 'aria-haspopup': 'dialog', 'aria-controls': popupId, 'data-open-popup': popupId };
+---
+<Tag class="folder" style={`--app:${color}`} {...attrs} aria-label={`${name} — ${type}. ${href ? 'Read the story' : 'Open a preview'}`}>
+  <span class="folder__tab" aria-hidden="true">{name}</span>
+  <span class="folder__body" aria-hidden="true">
+    <span class="folder__paper"></span>
+    <span class="folder__front"><span class="folder__type"><span class="dot"></span>{type}</span></span>
+  </span>
+</Tag>

@@ -1,0 +1,266 @@
+---
+import Base from '../layouts/Base.astro';
+import Key from '../components/Key.astro';
+import Character from '../components/Character.astro';
+import Window from '../components/Window.astro';
+import Folder from '../components/Folder.astro';
+import { stories } from '../data/stories';
+import { url, hasAsset } from '../lib/asset';
+
+const skills = ['Product thinking', 'UX research', 'Interaction design', 'Design systems', 'Design tokens', 'Figma Variables', 'Mobile-first', 'Accessibility (WCAG)', 'Information architecture', 'Prototyping', 'Developer handoff', 'AI-assisted design', 'UX writing'];
+const GMAIL = 'https://mail.google.com/mail/?view=cm&fs=1&to=anushkasrivastava.2478@gmail.com&su=Hello%20from%20your%20portfolio';
+const LINKEDIN = 'https://www.linkedin.com/in/anushka-srivastava-010a69297/';
+const shot = (app: string, k: string) => `assets/${app}/${k}.webp`;
+const jsonld = { '@context': 'https://schema.org', '@type': 'Person', name: 'Anushka Srivastava', jobTitle: 'UI/UX & Product Designer', address: { '@type': 'PostalAddress', addressLocality: 'Lucknow', addressCountry: 'IN' }, sameAs: [LINKEDIN] };
+---
+<Base title="Anushka Srivastava — UI/UX & Product Designer" description="A portfolio you explore like a desktop: five product stories, from problem to final UI." jsonld={jsonld}>
+  <header slot="header" class="site-header">
+    <nav class="keys keys--header" aria-label="Sections">
+      <Key label="Creativity" fn="F1" tone="yellow" href="#creativity" data-spy data-shortcut="F1" data-eyes-on="baby" aria-keyshortcuts="F1" />
+      <Key label="Self-Obsessed" fn="F2" tone="blue" href="#self-obsessed" data-spy data-shortcut="F2" aria-keyshortcuts="F2" />
+      <Key label="Please Click" fn="F3" tone="red" href="#please-click" data-spy data-shortcut="F3" data-eyes-on="happy" aria-keyshortcuts="F3" />
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero container" aria-labelledby="hero-title">
+    <h1 id="hero-title" class="sr-only">Hi! Hope you are happy. I’m Anushka, your tour guide to this portfolio.</h1>
+    <div class="hero__grid" aria-hidden="true">
+      <p class="hero__line hero__line--l display" style="--i:0">Hi! Hope</p>
+      <p class="hero__line hero__line--r display" style="--i:1">you are <span class="hl">happy</span>.</p>
+      <p class="hero__line hero__line--l display" style="--i:2">I’m Anushka,</p>
+      <p class="hero__line hero__line--r display c-blue" style="--i:3">your tour guide</p>
+      <p class="hero__line hero__line--l display" style="--i:4">to this</p>
+      <p class="hero__line hero__line--r display" style="--i:5">portfolio.</p>
+      <div class="hero__char"><Character size={400} interactive /></div>
+    </div>
+    <p class="hero__sub">Let’s explore a little about me!</p>
+    <a class="scroll-cue" href="#creativity"><span class="scroll-cue__mouse" aria-hidden="true"></span><span class="pixel faint">Scroll down</span></a>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="marquee" aria-label="Skills">
+    <ul class="marquee__list sr-only">{skills.map((s) => <li>{s}</li>)}</ul>
+    <div class="marquee__track" aria-hidden="true">
+      {[0, 1].map(() => <div class="marquee__group">{skills.map((s) => <span class="marquee__item">{s}<span class="marquee__star">✦</span></span>)}</div>)}
+    </div>
+  </section>
+
+  <!-- CREATIVITY -->
+  <section id="creativity" class="section container" aria-labelledby="cr-title">
+    <div class="section__head">
+      <p class="pixel c-folder">F1 · Creativity</p>
+      <h2 id="cr-title" class="h1">Things I’ve made</h2>
+      <p class="lead">Five stories, one path. Open a folder to peek inside — or read the whole story.</p>
+    </div>
+    <Window path="~/anushka/creativity" class="reveal">
+      <div class="path-start">
+        <Character size={92} expression="follow" label="Small illustration of Anushka" />
+        <p class="bubble">Five stories. Start anywhere — I’ll walk you through each one.</p>
+      </div>
+      <ol class="story-path">
+        {stories.map((s, i) => (
+          <li class:list={['stop', i % 2 && 'stop--flip']} style={`--app:${s.color}`}>
+            {i > 0 && <svg class="trail" viewBox="0 0 1000 90" preserveAspectRatio="none" aria-hidden="true"><path d={i % 2 ? 'M150 0 C150 60, 850 30, 850 90' : 'M850 0 C850 60, 150 30, 150 90'} /></svg>}
+            <div class="stop__folder">
+              <span class="stop__badge" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <Folder name={s.name} type={s.type} color={s.color} popupId={`pop-${s.slug}`} />
+            </div>
+            <a class="story-card" href={url(`work/${s.slug}/`)}>
+              <span class="story-card__copy">
+                <span class="pixel c-blue">Story {String(i + 1).padStart(2, '0')} · {s.type}</span>
+                <span class="story-card__name">{s.name}</span>
+                <span class="story-card__hook">{s.hook}</span>
+                <span class="key key--blue key--sm" aria-hidden="true"><span class="key__cap"><span class="key__label">Read the story →</span></span></span>
+              </span>
+              <span class:list={['story-card__peek', s.platform === 'phone' && 'is-phone']}>
+                {hasAsset(shot(s.slug, s.heroShots[0])) ? <img src={url(shot(s.slug, s.heroShots[0]))} alt="" loading="lazy" /> : <span class="img-missing" />}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </Window>
+  </section>
+
+  {stories.map((s) => (
+    <dialog id={`pop-${s.slug}`} class="popup" aria-labelledby={`pop-${s.slug}-title`} style={`--app:${s.color}`}>
+      <div class="window popup__window">
+        <div class="window__bar"><span class="window__dots"><button class="popup__close" data-close aria-label="Close preview"></button><span></span><span></span></span><span class="window__path">{s.popup.path}</span></div>
+        <div class="popup__body">
+          <div class="popup__collage" aria-hidden="true">
+            {s.popup.collage.map((k, j) => <span class={`tile tile--${j + 1}`}>{hasAsset(shot(s.slug, k)) ? <img src={url(shot(s.slug, k))} alt="" loading="lazy" /> : null}</span>)}
+            <span class="tape"></span>
+          </div>
+          <div class="popup__info">
+            <span class="chip chip--outline"><span class="dot" style="background:var(--app)"></span>{s.type}</span>
+            <h3 id={`pop-${s.slug}-title`} class="display popup__title">{s.name}</h3>
+            <p class="muted">{s.desc}</p>
+            <div class="chips">{s.popup.tags.map((t) => <span class="chip">{t}</span>)}</div>
+            <div class="popup__actions"><Key label="Take full tour →" fn="⏎" tone="blue" href={url(`work/${s.slug}/`)} /><span class="mono faint" style="font-size:13px">esc to close</span></div>
+          </div>
+        </div>
+      </div>
+    </dialog>
+  ))}
+
+  <!-- SELF-OBSESSED -->
+  <section id="self-obsessed" class="section section--subtle" aria-labelledby="me-title">
+    <div class="container">
+      <div class="section__head">
+        <p class="pixel c-blue">F2 · Self-Obsessed</p>
+        <h2 id="me-title" class="h1">A little about me</h2>
+      </div>
+      <Window path="~/anushka/self-obsessed/about-me.txt" class="reveal">
+        <div class="about">
+          <div class="about__portrait"><Character size={220} expression="happy" label="Illustration of Anushka laughing" /></div>
+          <div class="about__copy">
+            <p class="about__intro">I’m a UI/UX and product designer from Lucknow with 3+ years of designing dashboard-heavy SaaS, HRMS tools, mobile apps and websites.</p>
+            <p class="lead">I sit right between design and engineering — I build design systems in Figma and work with developers to turn them into components that actually ship.</p>
+          </div>
+        </div>
+        <div class="grid grid--4 about__cards">
+          <div class="card card--soft"><span class="pixel c-blue">● Now</span><strong>Deputy Team Lead – UX Engineering</strong><p class="muted small">HABOT CONNECT · 2025 – present. UI/UX for the HRMS Portal and internal workflow tools; swapping manual steps for automated ones.</p></div>
+          <div class="card card--soft"><span class="pixel c-folder">● Proud of</span><strong>30% faster delivery</strong><p class="muted small">After I brought AI-assisted tools — Figma AI, Gemini, ChatGPT — into our design process. Documented.</p></div>
+          <div class="card card--soft"><span class="pixel c-red">● Before</span><strong>Team manager, freelancer, intern</strong><p class="muted small">Subtrack Owner & Team Manager (2024–25), freelance UI/UX designer (2022–24), and two design internships.</p></div>
+          <div class="card card--soft"><span class="pixel c-green">● Studied</span><strong>B.Com, Accounts & Maths</strong><p class="muted small">Lucknow University. Class 12 at City Montessori School, Lucknow.</p></div>
+        </div>
+        <div class="toolbox"><span class="mono faint">On my desktop:</span>{['Figma', 'Framer', 'WordPress', 'Figma AI', 'Gemini', 'ChatGPT'].map((t) => <span class="chip chip--tool">{t}</span>)}</div>
+      </Window>
+    </div>
+  </section>
+
+  <!-- PLEASE CLICK -->
+  <section id="please-click" class="section container" aria-labelledby="ct-title">
+    <p class="pixel c-red center">F3 · Please Click</p>
+    <Window path="~/anushka/please-click/contact" class="contact reveal">
+      <h2 id="ct-title" class="display contact__title">Contact / Connect.</h2>
+      <div class="contact__keys">
+        <a class="key contact-key" href={GMAIL} target="_blank" rel="noopener">
+          <span class="key__cap"><span class="contact-key__icon" style="background:var(--as-traffic-red)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span><span class="key__label">Gmail</span><span class="contact-key__enter" aria-hidden="true">⏎</span><span class="sr-only"> — write to Anushka (opens in a new tab)</span></span>
+        </a>
+        <a class="key contact-key" href={LINKEDIN} target="_blank" rel="noopener">
+          <span class="key__cap"><span class="contact-key__icon" style="background:var(--as-system-blue)"><b aria-hidden="true">in</b></span><span class="key__label">LinkedIn</span><span class="contact-key__enter" aria-hidden="true">⏎</span><span class="sr-only"> — Anushka’s profile (opens in a new tab)</span></span>
+        </a>
+      </div>
+      <div class="thanks">
+        <span class="thanks__avatar"><Character size={128} expression="happy" label="" /></span>
+        <p class="display thanks__text">Thank you for visiting!!</p>
+      </div>
+    </Window>
+  </section>
+</Base>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--as-border-default); }
+  .keys--header { display: flex; justify-content: center; gap: 24px; padding: 12px 16px 18px; }
+  @media (max-width: 767px) { .keys--header { gap: 8px; padding: 10px 8px 14px; } }
+
+  .hero { padding-top: clamp(32px, 5vw, 64px); padding-bottom: 48px; text-align: center; }
+  .hero__grid { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); grid-template-rows: repeat(3, auto); align-items: center; column-gap: 28px; row-gap: clamp(8px, 3vw, 64px); }
+  .hero__line { font-size: clamp(30px, 3.9vw, 60px); white-space: nowrap; animation: rise 600ms var(--ease-out) both; animation-delay: calc(var(--i) * 60ms); }
+  .hero__line--l { grid-column: 1; text-align: right; }
+  .hero__line--r { grid-column: 3; text-align: left; }
+  .hero__char { grid-column: 2; grid-row: 1 / 4; width: clamp(240px, 24vw, 360px); }
+  .hero__char :global(.character) { width: 100%; }
+  .hl { background: linear-gradient(var(--as-folder-yellow), var(--as-folder-yellow)) no-repeat 0 85% / 100% 0.28em; animation: draw 500ms 400ms var(--ease-out) both; }
+  .hero__sub { margin-top: 24px; font-size: 24px; font-weight: 600; color: var(--as-text-secondary); }
+  .scroll-cue { display: inline-flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 16px; text-decoration: none; }
+  .scroll-cue__mouse { width: 24px; height: 38px; border: 2px solid var(--as-text-primary); border-radius: 12px; position: relative; }
+  .scroll-cue__mouse::after { content: ''; position: absolute; left: 50%; top: 8px; width: 2.4px; height: 7px; margin-left: -1.2px; border-radius: 2px; background: var(--as-text-primary); animation: nudge 1.6s ease-in-out 2; }
+  @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+  @keyframes draw { from { background-size: 0 0.28em; } }
+  @keyframes nudge { 50% { transform: translateY(6px); } }
+  @media (max-width: 899px) {
+    .hero__grid { grid-template-columns: 1fr; row-gap: 4px; }
+    .hero__line--l, .hero__line--r { grid-column: 1; text-align: center; white-space: normal; }
+    .hero__char { grid-column: 1; grid-row: 3; width: min(280px, 70vw); margin: 12px auto; }
+    .hero__line:nth-of-type(1) { grid-row: 1; } .hero__line:nth-of-type(2) { grid-row: 2; }
+    .hero__line:nth-of-type(3) { grid-row: 4; } .hero__line:nth-of-type(4) { grid-row: 5; }
+    .hero__line:nth-of-type(5) { grid-row: 6; } .hero__line:nth-of-type(6) { grid-row: 7; }
+    .hero__sub { font-size: 18px; }
+  }
+
+  .marquee { background: var(--as-system-blue); border-block: 1.5px solid var(--as-border-ink); overflow: hidden; padding: 26px 0; }
+  .marquee__track { display: flex; width: max-content; animation: marquee 60s linear infinite; }
+  .marquee:hover .marquee__track { animation-play-state: paused; }
+  .marquee__group { display: flex; gap: 28px; padding-right: 28px; }
+  .marquee__item { display: inline-flex; align-items: center; gap: 28px; font-family: var(--font-display); font-weight: 700; font-size: clamp(22px, 2.2vw, 30px); color: #fff; white-space: nowrap; }
+  .marquee__star { color: var(--as-folder-yellow); font-size: 0.8em; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  .section { padding-block: clamp(64px, 8vw, 120px); }
+  .section--subtle { background: var(--as-bg-subtle); }
+  .section__head { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; margin-bottom: 32px; }
+  .center { text-align: center; margin-bottom: 24px; }
+  .small { font-size: 15px; }
+
+  .path-start { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px; }
+  .bubble { max-width: 300px; padding: 14px 18px; border: 1.5px solid var(--as-border-ink); border-radius: 20px 20px 20px 4px; background: #fff; font-weight: 500; font-size: 15px; }
+  .story-path { list-style: none; margin: 0; padding: 0; }
+  .stop { position: relative; display: grid; grid-template-columns: 300px 1fr; gap: 40px; align-items: center; padding-top: 24px; }
+  .stop--flip { grid-template-columns: 1fr 300px; }
+  .stop--flip .stop__folder { order: 2; }
+  .stop__folder { position: relative; display: flex; justify-content: center; padding-top: 28px; }
+  .stop__badge { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--app); border: 2px solid var(--as-border-ink); font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: #fff; z-index: 3; }
+  .stop:nth-child(3) .stop__badge, .stop:nth-child(5) .stop__badge { color: var(--as-text-primary); }
+  .trail { display: block; width: 100%; height: 72px; margin-bottom: -16px; }
+  .trail path { fill: none; stroke: var(--as-folder-shade); stroke-width: 3; stroke-dasharray: 2 12; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .stop .trail { grid-column: 1 / -1; }
+  .story-card { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; padding: 24px 28px; border: 1.5px solid var(--as-border-ink); border-radius: 20px; background: #fff; text-decoration: none; box-shadow: 0 12px 28px rgba(28,31,38,.1); transition: transform 200ms var(--ease-out), box-shadow 200ms; }
+  .story-card:hover { transform: translateY(-4px); box-shadow: 0 18px 36px rgba(28,31,38,.14); }
+  .story-card__copy { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+  .story-card__name { font-family: var(--font-display); font-weight: 800; font-size: 40px; line-height: 1.05; }
+  .story-card__hook { color: var(--as-text-secondary); }
+  .story-card__peek { width: 220px; height: 140px; border: 1.5px solid var(--as-border-ink); border-radius: 10px; overflow: hidden; background: var(--as-bg-subtle); }
+  .story-card__peek.is-phone { width: 120px; height: 200px; border-radius: 18px; }
+  .story-card__peek img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  @media (max-width: 899px) {
+    .stop, .stop--flip { grid-template-columns: 1fr; gap: 16px; }
+    .stop--flip .stop__folder { order: 0; }
+    .stop__folder { display: none; }
+    .trail { display: none; }
+    .story-card { grid-template-columns: 1fr auto; padding: 18px; }
+    .story-card__name { font-size: 28px; }
+    .story-card__peek { width: 104px; height: 66px; } .story-card__peek.is-phone { width: 70px; height: 120px; border-radius: 12px; }
+  }
+
+  .popup { border: 0; padding: 16px; background: transparent; max-width: min(1080px, 100%); width: 100%; }
+  .popup::backdrop { background: rgba(28,31,38,.45); }
+  .popup[open] { animation: pop 300ms var(--ease-spring); }
+  @keyframes pop { from { opacity: 0; transform: translate(var(--from-x, 0), var(--from-y, 0)) scale(.6); } }
+  .popup__window { box-shadow: 0 30px 60px rgba(28,31,38,.22); }
+  .popup__close { width: 13px; height: 13px; border-radius: 50%; border: 1px solid var(--as-border-ink); background: var(--as-traffic-red); padding: 0; cursor: pointer; }
+  .popup__close:hover { box-shadow: 0 0 0 3px rgba(255,95,87,.3); }
+  .popup__body { display: grid; grid-template-columns: 500px 1fr; gap: 40px; padding: 40px; align-items: center; }
+  .popup__collage { position: relative; height: 400px; border-radius: 16px; background: var(--as-folder-paper); border: 1px solid var(--as-border-default); overflow: hidden; }
+  .tile { position: absolute; border: 1.5px solid var(--as-border-ink); border-radius: 12px; overflow: hidden; background: color-mix(in srgb, var(--app) 20%, white); box-shadow: 0 8px 18px rgba(0,0,0,.15); }
+  .tile img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .tile--1 { left: 8%; top: 15%; width: 46%; height: 75%; transform: rotate(-6deg); }
+  .tile--2 { left: 42%; top: 7%; width: 50%; height: 42%; transform: rotate(4deg); }
+  .tile--3 { left: 46%; top: 48%; width: 46%; height: 45%; transform: rotate(-2deg); }
+  .tape { position: absolute; left: 24%; top: 11%; width: 70px; height: 22px; background: var(--as-folder-yellow); opacity: .8; transform: rotate(-8deg); }
+  .popup__info { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+  .popup__title { font-size: 52px; }
+  .popup__actions { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+  @media (max-width: 899px) { .popup__body { grid-template-columns: 1fr; padding: 20px; gap: 20px; } .popup__collage { height: 240px; } .popup__title { font-size: 36px; } }
+
+  .about { display: grid; grid-template-columns: 220px 1fr; gap: 48px; align-items: center; }
+  .about__portrait { width: 220px; height: 286px; border: 1.5px solid var(--as-border-ink); border-radius: 20px; background: var(--as-folder-paper); overflow: hidden; }
+  .about__intro { font-family: var(--font-display); font-weight: 700; font-size: clamp(20px, 2vw, 28px); line-height: 1.25; margin-bottom: 16px; }
+  .about__cards { margin-top: 32px; }
+  .toolbox { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 24px; font-size: 14px; }
+  @media (max-width: 767px) { .about { grid-template-columns: 1fr; gap: 20px; } .about__portrait { margin-inline: auto; } }
+
+  .contact { max-width: 1000px; margin-inline: auto; }
+  .contact :global(.window__body) { display: flex; flex-direction: column; align-items: center; gap: 32px; padding-block: 56px; text-align: center; }
+  .contact__title { font-size: clamp(36px, 5vw, 64px); }
+  .contact__keys { display: flex; flex-wrap: wrap; justify-content: center; gap: 28px; }
+  .contact-key .key__cap { gap: 14px; padding-left: 16px; padding-right: 18px; }
+  .contact-key .key__label { font-size: 20px; }
+  .contact-key__icon { width: 36px; height: 36px; border-radius: 9px; display: grid; place-items: center; border: 1.5px solid var(--as-border-ink); color: #fff; font-weight: 600; }
+  .contact-key__enter { margin-left: 24px; font-family: var(--font-mono); color: var(--as-text-tertiary); }
+  .thanks { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; }
+  .thanks__avatar { width: 128px; height: 128px; border-radius: 50%; overflow: hidden; background: var(--as-folder-yellow); border: 1.5px solid var(--as-border-ink); }
+  .thanks__text { font-size: clamp(28px, 3.4vw, 44px); }
+</style>

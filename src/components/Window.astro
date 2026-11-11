@@ -1,0 +1,11 @@
+---
+interface Props { path: string; class?: string; bodyClass?: string }
+const { path, class: cls, bodyClass } = Astro.props;
+---
+<div class:list={['window', cls]}>
+  <div class="window__bar" aria-hidden="true">
+    <span class="window__dots"><span></span><span></span><span></span></span>
+    <span class="window__path">{path}</span>
+  </div>
+  <div class:list={['window__body', bodyClass]}><slot /></div>
+</div>

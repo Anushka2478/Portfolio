@@ -1,0 +1,78 @@
+/* Design tokens — mirrored from the Figma variable collections
+   "AS · Color" and "AS · Space & Type" (Portfolio page). Keep names in sync. */
+:root {
+  /* desktop & text */
+  --as-bg-desktop: #ffffff;
+  --as-bg-window: #ffffff;
+  --as-bg-subtle: #f5f6f8;
+  --as-bg-chrome: #eef0f4;
+  --as-bg-ink: #1c1f26;
+  --as-text-primary: #1c1f26;
+  --as-text-secondary: #555c69;
+  --as-text-tertiary: #5f6573;
+  --as-text-on-dark: #ffffff;
+  --as-border-default: #dcdfe5;
+  --as-border-ink: #1c1f26;
+
+  /* folder */
+  --as-folder-yellow: #ffc93c;
+  --as-folder-tab: #f5b300;
+  --as-folder-shade: #d99a00;
+  --as-folder-paper: #fffbef;
+  /* text-safe variants for small labels (≥ 4.5 : 1 on white) */
+  --as-folder-ink: #8a5f00;
+  --as-red-ink: #b42318;
+
+  /* system */
+  --as-system-blue: #2563eb;
+  --as-system-blue-shade: #1d4ed8;
+  --as-system-blue-soft: #e9f0ff;
+  --as-traffic-red: #ff5f57;
+  --as-traffic-red-shade: #d2443c;
+  --as-traffic-yellow: #febc2e;
+  --as-traffic-green: #28c840;
+  --as-key-neutral: #ffffff;
+  --as-key-neutral-shade: #c9cdd5;
+
+  /* apps */
+  --as-app-kosh: #4a45d6;
+  --as-app-pulsewise: #0f766e;
+  --as-app-promptjuice: #ff8fe3;
+  --as-app-relay: #3b7bf2;
+  --as-app-hyra: #8f87f8;
+
+  /* type */
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-ui: 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --font-pixel: 'Silkscreen', var(--font-mono);
+
+  --type-display: clamp(44px, 5.3vw, 76px);
+  --type-h1: clamp(34px, 3.6vw, 52px);
+  --type-h2: clamp(26px, 2.2vw, 32px);
+  --type-body-lg: clamp(18px, 1.4vw, 20px);
+  --type-body: clamp(16px, 1.2vw, 17px);
+
+  /* space & radius (Desktop mode; mobile overrides below) */
+  --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px;
+  --space-xl: 32px; --space-2xl: 56px; --space-3xl: 96px;
+  --radius-sm: 8px; --radius-md: 14px; --radius-lg: 20px; --radius-xl: 28px;
+  --key-depth: 6px;
+  --container: 1240px;
+  --gutter: 100px;
+
+  /* motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --shadow-window: 0 16px 40px rgba(28, 31, 38, 0.1);
+}
+
+@media (max-width: 1279px) {
+  :root { --gutter: 32px; }
+}
+@media (max-width: 767px) {
+  :root {
+    --space-lg: 20px; --space-xl: 24px; --space-2xl: 40px; --space-3xl: 64px;
+    --key-depth: 5px; --gutter: 16px;
+  }
+}

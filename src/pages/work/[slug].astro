@@ -1,0 +1,319 @@
+---
+import Base from '../../layouts/Base.astro';
+import Key from '../../components/Key.astro';
+import Window from '../../components/Window.astro';
+import Shot from '../../components/Shot.astro';
+import Folder from '../../components/Folder.astro';
+import Character from '../../components/Character.astro';
+import { stories, nextOf, type Story } from '../../data/stories';
+import { url, hasAsset } from '../../lib/asset';
+
+export function getStaticPaths() { return stories.map((s) => ({ params: { slug: s.slug }, props: { s } })); }
+const { s } = Astro.props as { s: Story };
+const next = nextOf(s);
+const n2 = (n: number) => String(n).padStart(2, '0');
+const A = (k: string) => `assets/${s.slug}/${k}.webp`;
+const img = (k: string, alt: string, cls = '') => hasAsset(A(k)) ? `<img class="${cls}" src="${url(A(k))}" alt="${alt.replace(/"/g, '&quot;')}" loading="lazy" decoding="async" />` : `<div class="img-missing ${cls}">${k}</div>`;
+const CH = [['overview', 'Overview & problem'], ['journey', 'Journey & IA'], ['process', 'Wireframes & process'], ['final-ui', 'Final UI & prototype'], ['decisions', 'Decisions & impact']];
+const jtbd = (t: string) => { const m = t.match(/^(When .*?), (I want .*?), (so .*)$/); return m ? [m[1] + ',', m[2] + ',', m[3]] : ['', t, '']; };
+const phone = s.platform === 'phone';
+const jsonld = { '@context': 'https://schema.org', '@type': 'CreativeWork', name: `${s.name} — case study`, description: s.hook, author: { '@type': 'Person', name: 'Anushka Srivastava' } };
+---
+<Base title={`${s.name} — case study · Anushka Srivastava`} description={`${s.hook} ${s.type}.`.slice(0, 155)} status={`Story ${n2(s.order)} of 05`} jsonld={jsonld}>
+  <header slot="header" class="story-header" style={`--app:${s.color}`}>
+    <div class="story-header__top container">
+      <Key label="← Back" fn="ESC" href={url('#creativity')} size="sm" data-back />
+      <span class="mono faint path">~/anushka/creativity/{s.slug}</span>
+      <Key label="Open in Figma ↗" fn="FIG" tone="blue" href={s.figmaUrl} external size="sm" class="hide-sm" />
+    </div>
+    <nav class="chapters container" aria-label="Chapters">
+      {CH.map(([id, label], i) => (
+        <a class="chapter-tab" href={`#${id}`} data-spy="step" data-state={i ? 'upcoming' : 'current'}><span class="chapter-tab__n">{n2(i + 1)}</span><span>{label}</span></a>
+      ))}
+    </nav>
+  </header>
+
+  <article class="story container" style={`--app:${s.color}`}>
+    <!-- HERO -->
+    <section class="s-hero">
+      <div class="s-hero__copy">
+        <p class="pixel c-blue">Story {n2(s.order)} / 05 · {s.type}</p>
+        <h1 class="s-hero__title display"><span class="app-chip" aria-hidden="true"></span>{s.name}</h1>
+        <p class="s-hero__hook">{s.hook}</p>
+        <p class="lead">{s.desc}</p>
+        <div class="chips">{s.meta.map((m, i) => <span class:list={['chip', i === 0 && 'chip--ink', m.startsWith('Tools') && 'chip--outline']}>{m}</span>)}</div>
+        <div class="links">
+          <Key label="Open design file ↗" fn="FIG" tone="blue" href={s.figmaUrl} external />
+          <Key label="Play prototype ▶" fn="PRO" tone="yellow" href={s.prototypeUrl} external />
+        </div>
+      </div>
+      <div class:list={['s-hero__devices', phone ? 'is-phone' : 'is-browser']}>
+        <div class="dev dev--back"><Shot app={s.slug} shot={s.heroShots[1]} platform={s.platform} domain={s.domain} caption={false} width={phone ? 270 : 500} eager /></div>
+        <div class="dev dev--front"><Shot app={s.slug} shot={s.heroShots[0]} platform={s.platform} domain={s.domain} caption={false} width={phone ? 290 : 560} eager /></div>
+      </div>
+    </section>
+
+    <!-- 01 OVERVIEW -->
+    <section id="overview" class="chapter" aria-labelledby="h-overview">
+      <header class="chapter__head reveal"><span class="chapter__num" aria-hidden="true">01</span><div><p class="pixel c-blue">Chapter 01</p><h2 id="h-overview" class="h1">Overview & problem</h2><p class="lead">{s.ch1.intro}</p></div></header>
+      <div class="grid grid--2 reveal">
+        <div class="card"><p class="pixel faint">What it is</p><p>{s.ch1.what}</p></div>
+        <div class="card card--paper problem"><p class="pixel c-red">Problem statement</p><p class="problem__text">{s.ch1.problem}</p></div>
+      </div>
+      <h3 class="h2 reveal">Who it’s for · proto-personas</h3>
+      <div class:list={['grid', s.ch1.who.length === 4 ? 'grid--4' : 'grid--3', 'reveal']}>
+        {s.ch1.who.map(([nm, prof, goal, frus]) => (
+          <div class="card"><strong class="persona__name">{nm}</strong><p class="muted small">{prof}</p><p class="pixel c-green">Goals</p><p class="small">{goal}</p><p class="pixel c-red">Frustrations</p><p class="small">{frus}</p></div>
+        ))}
+      </div>
+      <p class="note">{s.ch1.personaNote}</p>
+      <h3 class="h2 reveal">Jobs to be done</h3>
+      <div class:list={['grid', s.ch1.jtbd.length === 3 ? 'grid--3' : 'grid--2', 'reveal']}>
+        {s.ch1.jtbd.map((j, i) => { const [a, b, c] = jtbd(j); return (<div class="card card--subtle card--soft"><p class="pixel c-blue">Job {n2(i + 1)}</p><p class="muted">{a}</p><p class="job__want">{b}</p><p class="muted">{c}</p></div>); })}
+      </div>
+      <h3 class="h2 reveal">The landscape — where it fits</h3>
+      <div class="grid grid--3 reveal">
+        {s.ch1.landscape.map(([h, eg, d], i) => (
+          <div class:list={['card', i === s.ch1.landscape.length - 1 && 'card--blue']}><p class:list={['pixel', i === s.ch1.landscape.length - 1 ? 'c-blue' : 'faint']}>{i === s.ch1.landscape.length - 1 ? 'Our position' : 'Existing option'}</p><strong class="persona__name">{h}</strong><p class="mono faint small">{eg}</p><p class="muted">{d}</p></div>
+        ))}
+      </div>
+      <div class="grid grid--2 reveal">
+        <div class="card card--blue"><p class="pixel c-blue">Objective</p><ol class="objectives">{s.ch1.objectives.map((o) => <li>{o}</li>)}</ol></div>
+        <div class="why"><div class="why__copy"><p class="pixel c-blue">Why I designed it this way</p><p class="bubble">{s.ch1.why}</p></div><Character size={150} label="" /></div>
+      </div>
+    </section>
+
+    <!-- 02 JOURNEY -->
+    <section id="journey" class="chapter" aria-labelledby="h-journey">
+      <header class="chapter__head reveal"><span class="chapter__num" aria-hidden="true">02</span><div><p class="pixel c-blue">Chapter 02</p><h2 id="h-journey" class="h1">User journey & information architecture</h2><p class="lead">{s.ch2.intro}</p></div></header>
+      <h3 class="h2">Information architecture</h3>
+      <div class="card card--subtle ia reveal">
+        <ul class="ia__tree">
+          <li><span class="ia__node ia__node--root">{s.ch2.ia.root}</span>
+            <ul class="ia__sections">{s.ch2.ia.sections.map(([sec, leaves]) => (<li><span class="ia__node ia__node--section">{sec}</span><ul class="ia__leaves">{leaves.map((l) => <li><span class="ia__node">{l}</span></li>)}</ul></li>))}</ul>
+          </li>
+        </ul>
+        <p class="note center">{s.ch2.iaNote}</p>
+      </div>
+      <h3 class="h2">{s.ch2.journeyTitle}</h3>
+      <div class="card card--subtle journey reveal">
+        <ol class="steps">{s.ch2.journey.map((st) => { const kind = st.startsWith('?') ? 'decision' : st.startsWith('!') ? 'end' : 'step'; return <li class={`step step--${kind}`}>{kind === 'decision' && <span class="sr-only">Decision: </span>}{st.replace(/^[?!]/, '')}</li>; })}</ol>
+        {s.ch2.branches.map(([from, cond, to]) => (<p class="branch"><span class="mono faint">↳ at “{from}”</span><span class="cond">{cond}</span><span aria-hidden="true">→</span><span class="step step--step">{to}</span></p>))}
+      </div>
+      <h3 class="h2">Key interactions & decision points</h3>
+      <div class="grid grid--2 reveal">{s.ch2.interactions.map(([h, d]) => <div class="card"><strong>{h}</strong><p class="muted">{d}</p></div>)}</div>
+      {s.ch2.flowMap && hasAsset(A('flow')) && (
+        <Fragment><h3 class="h2">The full user flow map</h3>
+        <Window path={`~/${s.slug}/user-flow-map`} bodyClass="flush"><a href={url(A('flow'))} class="zoom" aria-label="Open the full user flow map"><Fragment set:html={img('flow', `${s.name} user flow map`, 'flowmap')} /></a></Window>
+        <p class="note">Every path from launch to task complete, with the tap that moves you to each screen. Open the design file to zoom in.</p></Fragment>
+      )}
+    </section>
+
+    <!-- 03 PROCESS -->
+    <section id="process" class="chapter" aria-labelledby="h-process">
+      <header class="chapter__head reveal"><span class="chapter__num" aria-hidden="true">03</span><div><p class="pixel c-blue">Chapter 03</p><h2 id="h-process" class="h1">Wireframes & design process</h2><p class="lead">{s.ch3.intro}</p></div></header>
+      <h3 class="h2">How the work moved</h3>
+      <ol class="timeline reveal">{s.ch3.process.map(([st, d], i) => (<li class:list={['timeline__step', i === s.ch3.process.length - 1 && 'is-last']}><span class="timeline__dot">{i + 1}</span><strong>{st}</strong><span class="muted small">{d}</span></li>))}</ol>
+      <h3 class="h2">From sketch to screen</h3>
+      {s.ch3.evolution.map((k) => (
+        <div class:list={['evolution', phone ? 'is-phone' : 'is-browser', 'reveal']}>
+          <figure><div class="evo-frame"><Fragment set:html={img(`sketch-${k}`, `Rough notebook sketch of the ${k} screen`)} /></div><figcaption class="pixel faint">1 · Rough sketch</figcaption></figure>
+          <span class="evo-arrow" aria-hidden="true">→</span>
+          <figure><div class="evo-frame"><Fragment set:html={img(`wire-${k}`, `Low-fidelity wireframe of the ${k} screen`)} /></div><figcaption class="pixel faint">2 · Low-fi wireframe</figcaption></figure>
+          <span class="evo-arrow" aria-hidden="true">→</span>
+          <figure><div class="evo-frame"><Fragment set:html={img(k, `Final ${k} screen`)} /></div><figcaption class="pixel faint">3 · Final UI</figcaption></figure>
+        </div>
+      ))}
+      <h3 class="h2">Iterations — what changed and why</h3>
+      <div class="iterations reveal">{s.ch3.iterations.map(([a, b, why], i) => (
+        <div class="card iteration"><span class="mono c-blue small">v{i + 1} → v{i + 2}</span><div><p class="pixel faint">Before</p><p class="muted">{a}</p></div><span class="evo-arrow" aria-hidden="true">→</span><div><p class="pixel c-green">After</p><p><strong>{b}</strong></p></div><div><p class="pixel c-blue">Why</p><p class="muted">{why}</p></div></div>
+      ))}</div>
+      {s.ch3.foundations && hasAsset(A('foundations')) && (
+        <Fragment><h3 class="h2">The design system underneath</h3>
+        <Window path={`~/${s.slug}/design-system/foundations`} bodyClass="flush"><Fragment set:html={img('foundations', `${s.name} design-system foundations`, 'foundations')} /></Window></Fragment>
+      )}
+      <p class="lead">{s.ch3.dsNote}</p>
+    </section>
+
+    <!-- 04 FINAL UI -->
+    <section id="final-ui" class="chapter" aria-labelledby="h-final">
+      <header class="chapter__head reveal"><span class="chapter__num" aria-hidden="true">04</span><div><p class="pixel c-blue">Chapter 04</p><h2 id="h-final" class="h1">Final UI & interactive prototype</h2><p class="lead">{s.ch4.intro}</p></div></header>
+      <h3 class="h2">The screens</h3>
+      <div class:list={['gallery', phone ? 'is-phone' : 'is-browser']}>{s.ch4.gallery.map(([k, t]) => <Shot app={s.slug} shot={k} platform={s.platform} title={t} domain={s.domain} />)}</div>
+      <h3 class="h2">A connected flow</h3>
+      <div class="card card--subtle flow reveal">
+        {s.ch4.flow.map(([k, t], i) => (<Fragment><Shot app={s.slug} shot={k} platform={s.platform} title={t} domain={s.domain} width={k.startsWith('@') || !phone ? 300 : 200} />{i < s.ch4.flow.length - 1 && <span class="flow__tap"><span aria-hidden="true">→</span><span class="mono small">{s.ch4.taps[i]}</span></span>}</Fragment>))}
+      </div>
+      <h3 class="h2">Micro-interactions</h3>
+      <div class="table-wrap reveal"><table class="table"><thead><tr><th scope="col">Moment</th><th scope="col">Behaviour</th><th scope="col">Reduced motion</th></tr></thead><tbody>{s.ch4.micro.map(([m, b, r]) => <tr><th scope="row">{m}</th><td>{b}</td><td>{r}</td></tr>)}</tbody></table></div>
+      <h3 class="h2">{s.ch4.modesTitle}</h3>
+      <div class="modes">{s.ch4.modes.map(([k, t]) => <Shot app={s.slug} shot={k} platform={s.platform} title={t} domain={s.domain} width={k.startsWith('%') || phone ? 280 : 520} />)}</div>
+      <div class="card card--yellow cta reveal"><div><p class="display cta__title">Click through it yourself</p><p>{s.ch4.protoNote}</p></div><Key label="Play prototype ▶" fn="PRO" tone="blue" href={s.prototypeUrl} external /></div>
+    </section>
+
+    <!-- 05 DECISIONS -->
+    <section id="decisions" class="chapter" aria-labelledby="h-decisions">
+      <header class="chapter__head reveal"><span class="chapter__num" aria-hidden="true">05</span><div><p class="pixel c-blue">Chapter 05</p><h2 id="h-decisions" class="h1">Design decisions & impact</h2><p class="lead">{s.ch5.intro}</p></div></header>
+      <div class="grid grid--2">{s.ch5.decisions.map(([c, d, w, e]) => (
+        <div class="card reveal"><span class="tag">{c}</span><h3 class="h2 decision">{d}</h3><p class="mono faint small">Why</p><p class="muted">{w}</p><p class="mono c-blue small">Effect on the user</p><p class="muted">{e}</p></div>
+      ))}</div>
+      <div class="card card--subtle reveal">
+        <h3 class="h2">How I validated it so far</h3>
+        <p class="muted">Method: expert review — heuristic gap audits, accessibility checks and handoff walkthroughs. Each finding changed the design. Testing with real users is the next step (below).</p>
+        <div class="table-wrap"><table class="table"><thead><tr><th scope="col">Check</th><th scope="col">Finding</th><th scope="col">Change made</th></tr></thead><tbody>{s.ch5.validation.map(([c, f, m]) => <tr><th scope="row">{c}</th><td>{f}</td><td><strong>{m}</strong></td></tr>)}</tbody></table></div>
+      </div>
+      <h3 class="h2">Impact — the targets this design is built to hit</h3>
+      <div class="targets">{s.ch5.targets.map(([v, l]) => (<div class="target reveal"><span class="target__badge pixel c-blue">Target</span><span class="target__value display" data-count>{v}</span><span class="muted">{l}</span></div>))}</div>
+      <p class="note">{s.ch5.targetNote ?? 'These are success targets set during design, written before any testing. They are how the next round of research will judge the work.'}</p>
+      <div class="card card--subtle"><h3 class="h2">What I’d do next</h3><ul class="next-list">{s.ch5.next.map((n) => <li>{n}</li>)}</ul></div>
+    </section>
+
+    <!-- NEXT -->
+    <section class="next card" aria-label="Next story">
+      <Folder name={next.name} type={next.type} color={next.color} href={url(`work/${next.slug}/`)} />
+      <div class="next__copy"><p class="pixel c-blue">Next · Story {n2(next.order)} / 05</p><p class="display next__name">{next.name}</p><p class="lead">{next.hook}</p></div>
+      <Key label={`Read story ${n2(next.order)} →`} fn="→" tone="yellow" href={url(`work/${next.slug}/`)} />
+    </section>
+    <p class="contact-strip"><span class="h2">Liked this story?</span><Key label="Please Click" fn="F3" tone="red" href={url('#please-click')} /></p>
+  </article>
+</Base>
+
+<script>
+  // Back returns to where the visitor came from when it was this site; Esc does the same.
+  const back = document.querySelector<HTMLAnchorElement>('[data-back]');
+  const sameOrigin = document.referrer && new URL(document.referrer).origin === location.origin;
+  back?.addEventListener('click', (e) => { if (sameOrigin) { e.preventDefault(); history.back(); } });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !document.querySelector('dialog[open]')) back?.click(); });
+</script>
+
+<style>
+  .story-header { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,.94); backdrop-filter: blur(12px); border-bottom: 1px solid var(--as-border-default); }
+  .story-header__top { display: flex; align-items: center; gap: 16px; padding-top: 12px; padding-bottom: 8px; }
+  .story-header__top .path { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+  .chapters { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x mandatory; }
+  .chapters::-webkit-scrollbar { display: none; }
+  .chapter-tab { scroll-snap-align: start; flex: none; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 18px 8px 12px; border: 1.5px solid var(--as-border-default); border-bottom: 0; border-radius: 14px 14px 0 0; background: var(--as-bg-chrome); color: var(--as-text-tertiary); text-decoration: none; font-weight: 600; font-size: 15px; }
+  .chapter-tab__n { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; font-family: var(--font-mono); font-size: 12px; border: 1.2px solid var(--as-border-default); background: #fff; }
+  .chapter-tab[data-state='current'] { background: #fff; color: var(--as-text-primary); border-color: var(--as-border-ink); }
+  .chapter-tab[data-state='current'] .chapter-tab__n { background: var(--as-system-blue); color: #fff; border-color: var(--as-border-ink); }
+  .chapter-tab[data-state='done'] { background: var(--as-folder-paper); color: var(--as-text-primary); border-color: var(--as-border-ink); }
+  .chapter-tab[data-state='done'] .chapter-tab__n { background: #157a2a; color: #fff; border-color: var(--as-border-ink); }
+  @media (max-width: 767px) { .hide-sm { display: none !important; } }
+
+  .story { display: flex; flex-direction: column; gap: clamp(80px, 10vw, 140px); padding-block: 72px 120px; }
+  .s-hero { display: grid; grid-template-columns: minmax(0, 1fr) 560px; gap: 48px; align-items: center; }
+  .s-hero__copy { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+  .s-hero__title { display: flex; align-items: center; gap: 20px; font-size: clamp(44px, 7vw, 88px); overflow-wrap: anywhere; }
+  .s-hero .chip { white-space: normal; }
+  .app-chip { width: 64px; height: 64px; border-radius: 18px; background: var(--app); border: 1.5px solid var(--as-border-ink); flex: none; }
+  .s-hero__hook { font-family: var(--font-display); font-weight: 700; font-size: clamp(24px, 2.6vw, 34px); line-height: 1.15; }
+  .links { display: flex; flex-wrap: wrap; gap: 16px; }
+  .s-hero__devices { position: relative; height: 640px; }
+  .dev { position: absolute; }
+  .is-phone .dev--back { left: 10px; top: 60px; transform: rotate(-5deg); }
+  .is-phone .dev--front { right: 10px; top: 20px; transform: rotate(3deg); }
+  .is-browser { height: 520px; }
+  .is-browser .dev--back { right: 0; top: 0; }
+  .is-browser .dev--front { left: 0; top: 160px; }
+  @media (max-width: 1100px) { .s-hero { grid-template-columns: minmax(0, 1fr); } .s-hero__devices { height: auto; display: flex; justify-content: center; min-width: 0; } .dev { position: static; transform: none !important; max-width: 100%; } .dev :global(.browser), .dev :global(.phone) { max-width: 100%; } .dev--back { display: none; } }
+  @media (max-width: 767px) { .app-chip { width: 44px; height: 44px; border-radius: 12px; } .s-hero__title { gap: 14px; } }
+
+  .chapter { display: flex; flex-direction: column; gap: 40px; scroll-margin-top: 140px; }
+  .chapter__head { display: flex; gap: 28px; align-items: flex-start; }
+  .chapter__head > div { display: flex; flex-direction: column; gap: 10px; }
+  .chapter__num { font-family: var(--font-display); font-weight: 800; font-size: clamp(72px, 9vw, 120px); line-height: .9; color: var(--as-folder-yellow); -webkit-text-stroke: 2px var(--as-border-ink); }
+  .problem__text { font-family: var(--font-display); font-weight: 700; font-size: clamp(20px, 2vw, 24px); line-height: 1.3; }
+  .persona__name { font-size: 19px; }
+  .small { font-size: 15px; }
+  .note { font-size: 15px; color: var(--as-text-tertiary); }
+  .center { text-align: center; }
+  .job__want { font-weight: 600; font-size: 17px; }
+  .objectives { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .why { display: flex; align-items: flex-end; gap: 16px; }
+  .why__copy { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  .bubble { padding: 16px 20px; border: 1.5px solid var(--as-border-ink); border-radius: 20px 20px 4px 20px; background: #fff; font-weight: 500; }
+
+  .ia__tree, .ia__tree ul { list-style: none; margin: 0; padding: 0; }
+  .ia__tree > li { display: flex; flex-direction: column; align-items: center; }
+  .ia__sections { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 28px !important; padding-top: 20px !important; border-top: 2px solid var(--as-border-ink); position: relative; }
+  .ia__sections::before { content: ''; position: absolute; top: -30px; left: 50%; width: 2px; height: 28px; background: var(--as-border-ink); }
+  .ia__sections > li { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .ia__leaves { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .ia__node { display: inline-block; padding: 7px 12px; border: 1px solid var(--as-border-ink); border-radius: 8px; background: #fff; font-size: 13px; font-weight: 500; }
+  .ia__node--section { padding: 12px 18px; border-width: 1.5px; border-radius: 12px; background: var(--as-folder-yellow); font-size: 15px; font-weight: 600; }
+  .ia__node--root { padding: 12px 18px; border-radius: 12px; background: var(--as-bg-ink); color: #fff; font-size: 17px; font-weight: 600; }
+  .ia .note { margin-top: 24px; }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 16px 12px; align-items: center; }
+  .steps li:not(:last-child)::after { content: '→'; margin-left: 12px; color: var(--as-text-tertiary); font-weight: 600; }
+  .step { display: inline-flex; padding: 12px 16px; border: 1.5px solid var(--as-border-ink); border-radius: 14px; background: #fff; font-weight: 600; font-size: 15px; }
+  .steps .step::after { margin-right: -28px; }
+  .step--decision { border-style: dashed; border-radius: 6px; background: var(--as-folder-paper); }
+  .step--end { background: var(--as-system-blue); color: #fff; }
+  .branch { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 20px; }
+  .cond { padding: 4px 10px; border-radius: 999px; background: var(--as-folder-yellow); font-family: var(--font-mono); font-size: 12px; }
+  .journey { gap: 0; }
+
+  :global(.flush) { padding: 0 !important; }
+  :global(.flowmap), :global(.foundations) { width: 100%; height: auto; max-height: 900px; object-fit: cover; object-position: top; }
+  .zoom { display: block; }
+
+  .timeline { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 16px 0; }
+  .timeline__step { display: flex; flex-direction: column; gap: 6px; padding-right: 12px; position: relative; }
+  .timeline__step::before { content: ''; position: absolute; top: 14px; left: 30px; right: 0; height: 2px; background: var(--as-border-ink); }
+  .timeline__step.is-last::before { display: none; }
+  .timeline__dot { position: relative; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--as-folder-yellow); border: 1.5px solid var(--as-border-ink); font-family: var(--font-mono); font-size: 12px; }
+  .is-last .timeline__dot { background: var(--as-system-blue); color: #fff; }
+
+  .evolution { display: flex; align-items: center; justify-content: center; gap: 20px; }
+  .evolution figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .evo-frame { border: 1.5px solid var(--as-border-ink); overflow: hidden; background: #fff; }
+  .is-phone .evo-frame { width: 260px; aspect-ratio: 260 / 562; border-radius: 32px; }
+  .is-browser .evo-frame { width: 360px; aspect-ratio: 16 / 10; border-radius: 12px; }
+  .evo-frame :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .evo-arrow { font-family: var(--font-display); font-weight: 700; font-size: 36px; color: var(--as-text-tertiary); }
+  @media (max-width: 1023px) {
+    .evolution { justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; }
+    .evolution figure { scroll-snap-align: start; flex: none; }
+    .is-phone .evo-frame { width: 220px; } .is-browser .evo-frame { width: 300px; }
+  }
+  .iterations { display: flex; flex-direction: column; gap: 16px; }
+  .iteration { display: grid; grid-template-columns: 80px 1fr auto 1fr 1fr; gap: 24px; align-items: center; }
+  @media (max-width: 899px) { .iteration { grid-template-columns: 1fr; gap: 10px; } .iteration .evo-arrow { display: none; } }
+
+  .gallery { display: grid; gap: 40px 24px; justify-items: center; }
+  .gallery.is-phone { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .gallery.is-browser { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gallery.is-phone :global(.device:has(.browser)) { grid-column: span 2; }
+  @media (max-width: 1023px) { .gallery.is-phone { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 767px) { .gallery.is-browser { grid-template-columns: minmax(0, 1fr); } }
+  .gallery > :global(.device) { min-width: 0; }
+  .flow { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: center; gap: 20px; }
+  .flow__tap { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--as-system-blue); font-family: var(--font-display); font-weight: 700; font-size: 32px; }
+  .flow__tap .mono { font-family: var(--font-mono); font-weight: 500; }
+  .modes { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; }
+  .cta { flex-direction: row; align-items: center; justify-content: space-between; gap: 32px; padding: 40px; flex-wrap: wrap; }
+  .cta__title { font-size: 36px; margin-bottom: 8px; }
+
+  .table-wrap { overflow-x: auto; border: 1.5px solid var(--as-border-ink); border-radius: 16px; background: #fff; }
+  .table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .table th, .table td { text-align: left; vertical-align: top; padding: 14px 20px; border-bottom: 1px solid var(--as-border-default); }
+  .table thead th { background: var(--as-bg-chrome); font-family: var(--font-mono); font-weight: 500; font-size: 12px; color: var(--as-text-tertiary); text-transform: uppercase; }
+  .table tbody th { font-weight: 600; min-width: 180px; }
+  .table td { color: var(--as-text-secondary); }
+  .table tr:last-child th, .table tr:last-child td { border-bottom: 0; }
+
+  .tag { align-self: flex-start; padding: 4px 10px; border-radius: 6px; background: var(--as-folder-yellow); font-family: var(--font-pixel); font-size: 11px; }
+  .decision { font-size: 24px; }
+  .targets { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .target { display: flex; flex-direction: column; gap: 8px; padding: 22px; border: 1.5px solid var(--as-border-ink); border-radius: 18px; background: var(--as-system-blue-soft); }
+  .target__badge { align-self: flex-start; padding: 3px 8px; border-radius: 6px; background: #fff; border: 1px solid var(--as-border-ink); font-size: 10px; }
+  .target__value { font-size: 44px; }
+  .next-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+
+  .next { flex-direction: row; align-items: center; gap: 40px; padding: 48px; flex-wrap: wrap; }
+  .next__copy { flex: 1; min-width: 240px; display: flex; flex-direction: column; gap: 10px; }
+  .next__name { font-size: clamp(44px, 5vw, 64px); }
+  .contact-strip { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; margin-top: -60px; }
+  @media (max-width: 767px) { .next { padding: 24px; } .chapter__head { gap: 12px; flex-direction: column; } .cta { padding: 24px; } }
+</style>

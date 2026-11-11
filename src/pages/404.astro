@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import Key from '../components/Key.astro';
+import Character from '../components/Character.astro';
+import { url } from '../lib/asset';
+---
+<Base title="Folder not found · Anushka Srivastava" description="This folder is empty." status="404 · folder not found">
+  <section class="nf container">
+    <Character size={240} expression="baby" label="Anushka looking surprised" />
+    <p class="pixel c-blue">Error 404</p>
+    <h1 class="display nf__title">This folder is empty.</h1>
+    <p class="lead">The page you were looking for moved or never existed. Let’s get you back to the desktop.</p>
+    <Key label="Back to desktop" fn="⏎" tone="blue" href={url('')} />
+  </section>
+</Base>
+<style>
+  .nf { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; padding-block: 80px 120px; }
+  .nf__title { font-size: clamp(40px, 5vw, 64px); }
+</style>
