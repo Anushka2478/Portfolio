@@ -18,7 +18,7 @@ export type Story = {
     targets: [string, string][]; targetNote?: string; next: string[] };
 };
 
-const ROLE = 'My role · product designer — IA, UI, design system, prototype';
+const ROLE = 'My role · User Interface / User Experience Designer — IA, UI, design system, prototype';
 const TOOLS = 'Tools · Figma (variables, components, prototyping)';
 
 export const stories: Story[] = [

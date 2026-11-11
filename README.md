@@ -1,6 +1,6 @@
 # Anushka Srivastava — Portfolio
 
-UI/UX and product designer from Lucknow. This is the code for my portfolio, built from my Figma design.
+User Interface / User Experience Designer from Lucknow. This is the code for my portfolio, built from my Figma design.
 
 **Stack:** [Astro](https://astro.build) (static), plain CSS with design tokens, a little vanilla JS. Hosted on GitHub Pages.
 
