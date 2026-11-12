@@ -221,7 +221,13 @@ const jsonld = { '@context': 'https://schema.org', '@type': 'CreativeWork', name
   .chapter { display: flex; flex-direction: column; gap: 40px; scroll-margin-top: 140px; }
   .chapter__head { display: flex; gap: 28px; align-items: flex-start; }
   .chapter__head > div { display: flex; flex-direction: column; gap: 10px; }
-  .chapter__num { font-family: var(--font-display); font-weight: 800; font-size: clamp(72px, 9vw, 120px); line-height: .9; color: var(--as-folder-yellow); -webkit-text-stroke: 2px var(--as-border-ink); }
+  .chapter__num { font-family: var(--font-display); font-weight: 800; font-size: clamp(72px, 9vw, 120px); line-height: .9; color: var(--as-folder-yellow);
+    /* Outer outline only: text-stroke also traces overlapping contours, which drew lines through the "4". */
+    --o: 1.5px; --oc: var(--as-border-ink);
+    text-shadow: var(--o) 0 0 var(--oc), calc(var(--o) * -1) 0 0 var(--oc), 0 var(--o) 0 var(--oc), 0 calc(var(--o) * -1) 0 var(--oc),
+      calc(var(--o) * .7) calc(var(--o) * .7) 0 var(--oc), calc(var(--o) * -.7) calc(var(--o) * .7) 0 var(--oc),
+      calc(var(--o) * .7) calc(var(--o) * -.7) 0 var(--oc), calc(var(--o) * -.7) calc(var(--o) * -.7) 0 var(--oc); }
+  @media (max-width: 767px) { .chapter__num { --o: 1px; } }
   .problem__text { font-family: var(--font-display); font-weight: 700; font-size: clamp(20px, 2vw, 24px); line-height: 1.3; }
   .persona__name { font-size: 19px; }
   .small { font-size: 15px; }
@@ -268,6 +274,7 @@ const jsonld = { '@context': 'https://schema.org', '@type': 'CreativeWork', name
   .evolution { display: flex; align-items: center; justify-content: center; gap: 20px; }
   .evolution figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 12px; }
   .evo-frame { position: relative; border: 1.5px solid var(--as-border-ink); overflow: hidden; background: #fff; }
+  @media (max-width: 767px) { .evo-frame { border-width: 1px; } .is-phone .evo-frame { border-radius: 24px; } }
   .is-phone .evo-frame { width: 260px; aspect-ratio: 260 / 562; border-radius: 32px; }
   .is-browser .evo-frame { width: 360px; aspect-ratio: 16 / 10; border-radius: 12px; }
   .evo-frame :global(img) { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }

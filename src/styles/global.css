@@ -153,3 +153,14 @@ button { font: inherit; color: inherit; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* Phones: slimmer device frames so the screens, not the bezels, carry the visual. */
+@media (max-width: 767px) {
+  .phone { padding: 5px; border-radius: 30px; box-shadow: 0 12px 24px rgba(28,31,38,.16); }
+  .phone::after { top: 11px; height: 14px; width: 26%; border-radius: 8px; }
+  .phone__screen { border-radius: 25px; }
+  .phone--web .phone__status { height: 30px; padding: 8px 18px 0; font-size: 11px; }
+  .browser { border-width: 1px; border-radius: 12px; box-shadow: 0 10px 22px rgba(28,31,38,.14); }
+  .browser__bar { padding: 7px 10px; border-bottom-width: 1px; }
+  .browser__bar .window__dots span { width: 8px; height: 8px; }
+}
