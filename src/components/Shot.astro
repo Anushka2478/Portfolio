@@ -20,7 +20,9 @@ const w = width ?? (kind === 'browser' ? 640 : 300);
       <div class="phone__screen">
         {kind === 'phoneweb' && <div class="phone__status" aria-hidden="true">9:41</div>}
         {kind === 'phoneweb' && <div class="phone__url" aria-hidden="true">🔒 {domain}</div>}
-        {exists ? <img src={url(src)} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" width="780" height="1688" /> : <div class="img-missing">{key}</div>}
+        {kind === 'phoneweb'
+          ? <div class="phone__view">{exists ? <img src={url(src)} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" width="780" height="1688" /> : <div class="img-missing">{key}</div>}</div>
+          : (exists ? <img src={url(src)} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" width="780" height="1688" /> : <div class="img-missing">{key}</div>)}
       </div>
     </div>
   )}
