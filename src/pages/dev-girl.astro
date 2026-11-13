@@ -1,0 +1,15 @@
+---
+// Temporary preview page for the 3D character (removed before publishing).
+---
+<html><head><meta charset="utf-8" /><style>body{margin:0;background:#fff}#host{width:400px;position:relative}#host canvas{display:block;width:100%;height:auto}</style></head>
+<body><div id="host"></div>
+<script>
+  import { createGirl } from '../scripts/girl3d';
+  const q = new URLSearchParams(location.search);
+  const host = document.getElementById('host')!;
+  if (q.get('w')) host.style.width = q.get('w') + 'px';
+  if (q.get('bg')) document.body.style.background = q.get('bg')!;
+  const g = createGirl(host, { expression: (q.get('e') as any) || 'follow', animate: q.get('anim') === '1', pixelRatio: Number(q.get('dpr') || 2) });
+  (window as any).__girl = g;
+  (window as any).__ready = true;
+</script></body></html>
