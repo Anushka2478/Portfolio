@@ -29,15 +29,15 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <div class="os-bar" aria-hidden="true">
-      <span class="brand">ANUSHKA.OS</span>
-      <span class="menu"><span>File</span><span>Edit</span><span>View</span><span>Go</span><span>Help</span></span>
-      <span class="status">{status}</span>
+    <div class="os-bar">
+      <a class="brand brand--home" href={url('')} aria-label="Anushka.OS — go to the home page">ANUSHKA.OS</a>
+      <span class="menu" aria-hidden="true"><span>File</span><span>Edit</span><span>View</span><span>Go</span><span>Help</span></span>
+      <span class="status" aria-hidden="true">{status}</span>
     </div>
     <slot name="header" />
     <main id="main"><slot /></main>
     <footer class="site-footer">
-      <span class="brand">ANUSHKA.OS</span>
+      <a class="brand brand--home" href={url('')} aria-label="Anushka.OS — go to the home page">ANUSHKA.OS</a>
       <span>Designed by Anushka Srivastava · Lucknow, India</span>
     </footer>
     <div class="scroll-rail" aria-hidden="true"><span class="scroll-rail__thumb"></span></div>
