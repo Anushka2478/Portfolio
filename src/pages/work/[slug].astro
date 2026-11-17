@@ -104,8 +104,8 @@ const jsonld = { '@context': 'https://schema.org', '@type': 'CreativeWork', name
       <div class="grid grid--2 reveal">{s.ch2.interactions.map(([h, d]) => <div class="card"><strong>{h}</strong><p class="muted">{d}</p></div>)}</div>
       {s.ch2.flowMap && hasAsset(A('flow')) && (
         <Fragment><h3 class="h2">The full user flow map</h3>
-        <Window path={`~/${s.slug}/user-flow-map`} bodyClass="flush"><a href={url(A('flow'))} class="zoom" aria-label="Open the full user flow map"><Fragment set:html={img('flow', `${s.name} user flow map`, 'flowmap')} /></a></Window>
-        <p class="note">Every path from launch to task complete, with the tap that moves you to each screen. Open the design file to zoom in.</p></Fragment>
+        <Window path={`~/${s.slug}/user-flow-map`} bodyClass="flush"><a href={url(A('flow'))} class="zoom" data-viewer={`~/${s.slug}/user-flow-map`} aria-label="View the full user flow map"><Fragment set:html={img('flow', `${s.name} user flow map`, 'flowmap')} /><span class="zoom__fade" aria-hidden="true"></span><span class="zoom__pill" aria-hidden="true"><span class="zoom__icon">⤢</span> View full flow map</span></a></Window>
+        <p class="note">Every path from launch to task complete, with the tap that moves you to each screen. Tap the map to see all of it.</p></Fragment>
       )}
     </section>
 
@@ -130,7 +130,7 @@ const jsonld = { '@context': 'https://schema.org', '@type': 'CreativeWork', name
       ))}</div>
       {s.ch3.foundations && hasAsset(A('foundations')) && (
         <Fragment><h3 class="h2">The design system underneath</h3>
-        <Window path={`~/${s.slug}/design-system/foundations`} bodyClass="flush"><Fragment set:html={img('foundations', `${s.name} design-system foundations`, 'foundations')} /></Window></Fragment>
+        <Window path={`~/${s.slug}/design-system/foundations`} bodyClass="flush"><a href={url(A('foundations'))} class="zoom" data-viewer={`~/${s.slug}/design-system/foundations`} aria-label="View the full design system"><Fragment set:html={img('foundations', `${s.name} design-system foundations`, 'foundations')} /><span class="zoom__fade" aria-hidden="true"></span><span class="zoom__pill" aria-hidden="true"><span class="zoom__icon">⤢</span> View full design system</span></a></Window></Fragment>
       )}
       <p class="lead">{s.ch3.dsNote}</p>
     </section>
@@ -176,6 +176,16 @@ const jsonld = { '@context': 'https://schema.org', '@type': 'CreativeWork', name
     </section>
     <p class="contact-strip"><span class="h2">Liked this story?</span><Key label="Please Click" fn="F3" tone="red" href={url('#please-click')} /></p>
   </article>
+  <dialog class="viewer" id="viewer" aria-labelledby="viewer-title">
+    <div class="viewer__bar">
+      <span class="window__dots"><button class="viewer__dot" data-viewer-close aria-label="Close full view"></button><span></span><span></span></span>
+      <p id="viewer-title" class="window__path viewer__title"></p>
+      <button type="button" class="viewer__btn" data-viewer-size aria-pressed="false">Actual size</button>
+      <a class="viewer__btn hide-sm" data-viewer-open target="_blank" rel="noopener">Open image ↗</a>
+      <button type="button" class="viewer__btn viewer__x" data-viewer-close aria-label="Close full view">✕</button>
+    </div>
+    <div class="viewer__body" tabindex="0"><img alt="" decoding="async" /></div>
+  </dialog>
 </Base>
 
 <script>
@@ -184,6 +194,30 @@ const jsonld = { '@context': 'https://schema.org', '@type': 'CreativeWork', name
   const sameOrigin = document.referrer && new URL(document.referrer).origin === location.origin;
   back?.addEventListener('click', (e) => { if (sameOrigin) { e.preventDefault(); history.back(); } });
   addEventListener('keydown', (e) => { if (e.key === 'Escape' && !document.querySelector('dialog[open]')) back?.click(); });
+
+  // Full-size viewer for the tall boards (design system, flow map).
+  const dlg = document.getElementById('viewer') as HTMLDialogElement | null;
+  if (dlg && typeof dlg.showModal === 'function') {
+    const big = dlg.querySelector('img')!;
+    const body = dlg.querySelector<HTMLElement>('.viewer__body')!;
+    const title = dlg.querySelector('#viewer-title')!;
+    const size = dlg.querySelector<HTMLButtonElement>('[data-viewer-size]')!;
+    const open = dlg.querySelector<HTMLAnchorElement>('[data-viewer-open]')!;
+    let opener: HTMLElement | null = null;
+    const setActual = (on: boolean) => { dlg.classList.toggle('is-actual', on); size.setAttribute('aria-pressed', String(on)); size.textContent = on ? 'Fit to width' : 'Actual size'; };
+    document.querySelectorAll<HTMLAnchorElement>('[data-viewer]').forEach((a) => a.addEventListener('click', (e) => {
+      e.preventDefault(); opener = a;
+      const thumb = a.querySelector('img');
+      big.src = a.href; big.alt = thumb?.alt || '';
+      title.textContent = a.dataset.viewer || '';
+      open.href = a.href; setActual(false);
+      dlg.showModal(); body.scrollTop = 0; body.scrollLeft = 0; body.focus();
+    }));
+    size.addEventListener('click', () => setActual(!dlg.classList.contains('is-actual')));
+    dlg.querySelectorAll('[data-viewer-close]').forEach((b) => b.addEventListener('click', () => dlg.close()));
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('close', () => opener?.focus());
+  }
 </script>
 
 <style>
@@ -261,8 +295,37 @@ const jsonld = { '@context': 'https://schema.org', '@type': 'CreativeWork', name
   .journey { gap: 0; }
 
   :global(.flush) { padding: 0 !important; }
-  :global(.flowmap), :global(.foundations) { width: 100%; height: auto; max-height: 900px; object-fit: cover; object-position: top; }
-  .zoom { display: block; }
+  :global(.flowmap), :global(.foundations) { display: block; width: 100%; height: auto; max-height: 900px; object-fit: cover; object-position: top; }
+  .zoom { display: block; position: relative; cursor: zoom-in; color: inherit; text-decoration: none; }
+  .zoom__fade { position: absolute; inset: auto 0 0 0; height: 160px; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,.96)); pointer-events: none; }
+  .zoom__pill { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border: 1.5px solid var(--as-border-ink); border-radius: 999px; background: var(--as-folder-yellow); color: var(--as-border-ink); font-weight: 600; font-size: 15px; white-space: nowrap; box-shadow: 0 3px 0 var(--as-border-ink); transition: transform .15s ease, box-shadow .15s ease; }
+  .zoom__icon { font-size: 18px; line-height: 1; }
+  .zoom:hover .zoom__pill, .zoom:focus-visible .zoom__pill { transform: translateX(-50%) translateY(-2px); box-shadow: 0 5px 0 var(--as-border-ink); }
+  .zoom:focus-visible { outline: 3px solid var(--as-system-blue); outline-offset: -3px; }
+
+  .viewer { width: min(1240px, 96vw); height: 94vh; height: 94dvh; max-width: none; max-height: none; padding: 0; border: 1.5px solid var(--as-border-ink); border-radius: var(--radius-lg); background: var(--as-bg-window); overflow: hidden; box-shadow: 0 24px 60px rgba(28,31,38,.35); }
+  .viewer[open] { display: flex; flex-direction: column; animation: viewer-in .18s ease-out; }
+  .viewer::backdrop { background: rgba(28,31,38,.6); }
+  @keyframes viewer-in { from { opacity: 0; transform: scale(.98); } to { opacity: 1; transform: none; } }
+  .viewer__bar { flex: none; display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 6px 10px 6px 16px; background: var(--as-bg-chrome); border-bottom: 1.5px solid var(--as-border-ink); }
+  .viewer__title { flex: 1; min-width: 0; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .viewer__dot { width: 13px; height: 13px; padding: 0; border-radius: 50%; border: 1px solid var(--as-border-ink); background: var(--as-traffic-red, #ff5f57); cursor: pointer; }
+  .viewer__btn { flex: none; display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border: 1.5px solid var(--as-border-ink); border-radius: 10px; background: #fff; color: var(--as-border-ink); font: inherit; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; }
+  .viewer__btn:hover { background: var(--as-system-blue-soft); }
+  .viewer__x { width: 40px; justify-content: center; padding: 0; font-size: 16px; }
+  .viewer__body { flex: 1; overflow: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; background: #fff; }
+  .viewer__body:focus-visible { outline: 3px solid var(--as-system-blue); outline-offset: -3px; }
+  .viewer__body img { display: block; width: 100%; height: auto; margin: 0 auto; }
+  .viewer.is-actual .viewer__body img { width: auto; max-width: none; }
+  :global(html:has(dialog.viewer[open])) { overflow: hidden; }
+  @media (max-width: 767px) {
+    :global(.flowmap), :global(.foundations) { max-height: 560px; }
+    .zoom__fade { height: 120px; }
+    .zoom__pill { bottom: 18px; padding: 10px 16px; font-size: 14px; }
+    .viewer { width: 100vw; height: 100vh; height: 100dvh; border: 0; border-radius: 0; }
+    .viewer__bar { min-height: 56px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .viewer[open] { animation: none; } .zoom__pill { transition: none; } }
 
   .timeline { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 16px 0; }
   .timeline__step { display: flex; flex-direction: column; gap: 6px; padding-right: 12px; position: relative; }
