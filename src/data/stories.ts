@@ -24,8 +24,8 @@ const TOOLS = 'Tools · Figma (variables, components, prototyping)';
 export const stories: Story[] = [
   {
     slug: 'kosh', order: 1, name: 'Kosh', type: 'Mobile app · Fintech', color: 'var(--as-app-kosh)', platform: 'phone', domain: 'kosh.app',
-    figmaUrl: 'https://www.figma.com/design/wLbcL3YUWFObmOZrWHMt9N/KOSH-APPLICATION?node-id=23-4',
-    prototypeUrl: 'https://www.figma.com/proto/wLbcL3YUWFObmOZrWHMt9N/KOSH-APPLICATION?node-id=23-4',
+    figmaUrl: 'https://www.figma.com/design/wLbcL3YUWFObmOZrWHMt9N/KOSH-APPLICATION?node-id=23-4&p=f&t=QxqFioYSRsE42ffF-0',
+    prototypeUrl: 'https://www.figma.com/proto/wLbcL3YUWFObmOZrWHMt9N/KOSH-APPLICATION?node-id=23-4&p=f&t=QxqFioYSRsE42ffF-0&scaling=min-zoom&content-scaling=fixed&page-id=23%3A4&starting-point-node-id=40%3A4648&show-proto-sidebar=1',
     hook: 'Money apps fail on trust before they fail on features.',
     desc: 'A mobile money copilot for India. Kosh links every bank account through the RBI Account Aggregator framework, explains spending automatically, and turns insights into budgets, goals, SIPs and UPI payments.',
     meta: [ROLE, 'Product design · concept', 'iOS & Android', '28 core screens + states + dark', 'Sep 2026', TOOLS], heroShots: ['home', 'consent'],
@@ -81,8 +81,8 @@ export const stories: Story[] = [
   },
   {
     slug: 'pulsewise', order: 2, name: 'Pulsewise', type: 'Health · App + console', color: 'var(--as-app-pulsewise)', platform: 'phone', domain: 'console.pulsewise.health',
-    figmaUrl: 'https://www.figma.com/design/PMiYIIPhgUUbw8TkZPB0XE/Pulsewise',
-    prototypeUrl: 'https://www.figma.com/proto/PMiYIIPhgUUbw8TkZPB0XE/Pulsewise?node-id=19-10393&starting-point-node-id=19%3A10393',
+    figmaUrl: 'https://www.figma.com/design/PMiYIIPhgUUbw8TkZPB0XE/Pulsewise?t=QxqFioYSRsE42ffF-0',
+    prototypeUrl: 'https://www.figma.com/proto/PMiYIIPhgUUbw8TkZPB0XE/Pulsewise?node-id=19-10393&p=f&t=QxqFioYSRsE42ffF-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=19%3A10393&show-proto-sidebar=1',
     hook: 'A number always has a verdict — for patients, and for the clinicians watching over them.',
     desc: 'Remote patient monitoring for chronic conditions. Patients take readings at home with connected devices; clinicians see a risk-ranked queue that tells them who needs attention first, today.',
     meta: [ROLE, 'Product design · concept', 'Patient app + clinician console', '27 screens · large text · dark', '2026', TOOLS], heroShots: ['today', 'critical'],
@@ -139,8 +139,8 @@ export const stories: Story[] = [
   },
   {
     slug: 'promptjuice', order: 3, name: 'Promptjuice', type: 'Website · Learning', color: 'var(--as-app-promptjuice)', platform: 'browser', domain: 'promptjuice.design',
-    figmaUrl: 'https://www.figma.com/design/Hr8WnTOa049krIlHWiCqYm/Prompt-juice',
-    prototypeUrl: 'https://www.figma.com/proto/Hr8WnTOa049krIlHWiCqYm/Prompt-juice?node-id=12-7858&starting-point-node-id=12%3A7858',
+    figmaUrl: 'https://www.figma.com/design/Hr8WnTOa049krIlHWiCqYm/Prompt-juice?m=auto&t=QxqFioYSRsE42ffF-6',
+    prototypeUrl: 'https://www.figma.com/proto/Hr8WnTOa049krIlHWiCqYm/Prompt-juice?node-id=12-4186&p=f&t=pm2uCZ77YtFYHo7d-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=12%3A4186&show-proto-sidebar=1',
     hook: 'Show the recipe, not the magic.',
     desc: 'A website where designers collect visual references, discover AI tools and learn how prompts actually work. Every reference comes with a colour-coded prompt recipe you can remix.',
     meta: [ROLE, 'Product design · concept', 'Website · desktop + mobile', '12 desktop + 8 mobile pages · Studio mode', 'Sep 2026', TOOLS], heroShots: ['home', 'playground'],
@@ -196,8 +196,8 @@ export const stories: Story[] = [
   },
   {
     slug: 'relay', order: 4, name: 'Relay', type: 'Web app · AI workflows', color: 'var(--as-app-relay)', platform: 'browser', domain: 'app.relay.dev',
-    figmaUrl: 'https://www.figma.com/design/91k6GaPJiQAs0gsu98FFiG/Relay',
-    prototypeUrl: 'https://www.figma.com/proto/91k6GaPJiQAs0gsu98FFiG/Relay?node-id=20-63877&starting-point-node-id=20%3A63877',
+    figmaUrl: 'https://www.figma.com/design/91k6GaPJiQAs0gsu98FFiG/Relay?m=auto&t=QxqFioYSRsE42ffF-6',
+    prototypeUrl: 'https://www.figma.com/proto/91k6GaPJiQAs0gsu98FFiG?node-id=0-1&t=e06FDfmlbPRYkMl2-6',
     hook: 'Show the work.',
     desc: 'Where operations teams build, run and supervise AI agent workflows — a canvas to build, a trace for every run, and human approval gates before anything risky happens.',
     meta: [ROLE, 'Product design · concept', 'B2B web app · 1440', '29 screens · landing page · dark + light', 'Sep 2026', TOOLS], heroShots: ['canvas', 'trace'],
@@ -254,8 +254,8 @@ export const stories: Story[] = [
   },
   {
     slug: 'hyra', order: 5, name: 'Hyra', type: 'Web app · HR dashboard', color: 'var(--as-app-hyra)', platform: 'browser', domain: 'hyra.app',
-    figmaUrl: 'https://www.figma.com/design/0wclXZu4BIreI7DBmQaA8x/HYRA-Dashboard',
-    prototypeUrl: 'https://www.figma.com/proto/0wclXZu4BIreI7DBmQaA8x/HYRA-Dashboard?node-id=1-996&starting-point-node-id=1%3A996',
+    figmaUrl: 'https://www.figma.com/design/0wclXZu4BIreI7DBmQaA8x/HYRA-Dashboard?m=auto&t=QxqFioYSRsE42ffF-6',
+    prototypeUrl: 'https://www.figma.com/proto/0wclXZu4BIreI7DBmQaA8x/HYRA-Dashboard?t=QxqFioYSRsE42ffF-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&node-id=0-1&starting-point-node-id=1%3A996&show-proto-sidebar=1&fuid=1681549788707194479',
     hook: 'Everything an HR team checks before 10 a.m., on one screen.',
     desc: 'An HR dashboard that brings people, attendance, leave, hiring, onboarding, payroll and approvals into one place — so an HR manager starts the day with what needs her, not with six tabs.',
     meta: [ROLE, 'Product design · concept', 'Web app · 1600', '14 screens · light + dark', '2026', TOOLS], heroShots: ['dashboard', 'dashboard-dark'],
